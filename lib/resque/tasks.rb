@@ -13,8 +13,8 @@ namespace :resque do
 
     begin
       worker = Resque::Worker.new(*queues)
-      worker.verbose = ENV['LOGGING'] || ENV['VERBOSE']
-      worker.very_verbose = ENV['VVERBOSE']
+      worker.verbose =      !["0", "false", "off", "nil", "no"].include?(ENV['LOGGING'] || ENV['VERBOSE'])
+      worker.very_verbose = !["0", "false", "off", "nil", "no"].include?(ENV['VVERBOSE'])
     rescue Resque::NoQueueError
       abort "set QUEUE env var, e.g. $ QUEUE=critical,high rake resque:work"
     end
