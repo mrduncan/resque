@@ -79,43 +79,6 @@ namespace :redis do
     RedisRunner.attach
   end
 
-  desc 'Install the latest verison of Redis from Github (requires git, duh)'
-  task :install => [:about, :download, :make] do
-    bin_dir = '/usr/bin'
-    conf_dir = '/etc'
-
-    if ENV['PREFIX']
-      bin_dir = "#{ENV['PREFIX']}/bin"
-      sh "mkdir -p #{bin_dir}" unless File.exists?("#{bin_dir}")
-
-      conf_dir = "#{ENV['PREFIX']}/etc"
-      sh "mkdir -p #{conf_dir}" unless File.exists?("#{conf_dir}")
-    end
-
-    %w(redis-benchmark redis-cli redis-server).each do |bin|
-      sh "cp /tmp/redis/#{bin} #{bin_dir}"
-    end
-
-    puts "Installed redis-benchmark, redis-cli and redis-server to #{bin_dir}"
-
-    unless File.exists?("#{conf_dir}/redis.conf")
-      sh "cp /tmp/redis/redis.conf #{conf_dir}/redis.conf"
-      puts "Installed redis.conf to #{conf_dir} \n You should look at this file!"
-    end
-  end
-
-  task :make do
-    sh "cd /tmp/redis && make clean"
-    sh "cd /tmp/redis && make"
-  end
-
-  desc "Download package"
-  task :download do
-    sh 'rm -rf /tmp/redis/' if File.exists?("/tmp/redis/.svn")
-    sh 'git clone git://github.com/antirez/redis.git /tmp/redis' unless File.exists?('/tmp/redis')
-    sh "cd /tmp/redis && git pull" if File.exists?("/tmp/redis/.git")
-  end
-
 end
 
 namespace :dtach do
